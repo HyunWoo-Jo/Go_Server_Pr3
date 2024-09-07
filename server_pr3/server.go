@@ -37,12 +37,11 @@ func OnAccept(ln net.Listener) {
 			fmt.Println("Accept err :", err)
 			continue
 		}
-		go ReceiveMessage(conn)
+		go OnReceiveMessage(conn)
 	}
 }
 
 // 연결 취소
 func Cancel(conn net.Conn) {
 	conn.Close()
-
 }
