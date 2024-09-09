@@ -1,5 +1,8 @@
 # Go_Server_Pr3
 ---
+Room Join 서버
+
+---
 ### Main Logic Flow
 <img width="881" alt="MainLogic" src="https://github.com/user-attachments/assets/8cc34674-7a98-419e-bd20-e461437b1849">
 
