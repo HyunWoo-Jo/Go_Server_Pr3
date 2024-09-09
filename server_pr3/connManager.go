@@ -5,6 +5,7 @@ import (
 	"sync"
 )
 
+// Conn 접속 데이터를 Map에 저장 관리
 type ConnManager struct {
 	mutex    sync.RWMutex
 	connsMap map[string]net.Conn
