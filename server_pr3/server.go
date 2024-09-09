@@ -5,12 +5,14 @@ import (
 	"net"
 )
 
-var cm *ConnManager // conn data를 가지고 있는 map
+var cm *ConnManager // conn data를 관리 하는 map
+var rm *RoomManager // room data를 관리 하는 Map
 
 // 서버 Open / tcp 연결
 func OpenServer(port string) {
 
-	cm = NewConnManager() // Conn Manager 생성
+	cm = NewConnManager() // conn manager 생성
+	rm = NewRoomManager() // room manager 생성
 
 	lnsten, err := net.Listen("tcp", port)
 	if err != nil {

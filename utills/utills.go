@@ -1,15 +1,15 @@
 package utills
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"net"
 	"strings"
 )
 
 func Decoposit(input string) []string {
-	return strings.FieldsFunc(input, func(r rune) bool {
-		return strings.ContainsRune(":", r)
-	})
+	return strings.Split(input, ":")
 }
 
 func NetConnSplitIp(conn net.Conn) string {
@@ -36,4 +36,13 @@ func colorPrintln(color string, strs ...string) {
 		fmt.Print(str)
 	}
 	fmt.Println(FMT_RESET)
+}
+
+// sha 256 암호화
+func CryptoSha256(str string) string {
+	hash := sha256.New()
+	hash.Write([]byte(str))
+	hashByte := hash.Sum(nil)
+
+	return hex.EncodeToString(hashByte)
 }

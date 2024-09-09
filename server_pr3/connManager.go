@@ -26,8 +26,8 @@ func (connManager *ConnManager) AddConn(key string, conn net.Conn) {
 func (connManager *ConnManager) GetConn(key string) (net.Conn, bool) {
 	connManager.mutex.Lock()
 	defer connManager.mutex.Unlock()
-	conn, exists := connManager.connsMap[key]
-	return conn, exists
+	conn, exist := connManager.connsMap[key]
+	return conn, exist
 }
 
 func (connManager *ConnManager) RemoveConn(key string) {

@@ -5,6 +5,11 @@ import (
 	"net"
 )
 
+type MessageData struct {
+	Msg  string
+	Conn net.Conn
+}
+
 // 송신
 func SendMessage(userConn net.Conn, message string) {
 
@@ -26,7 +31,7 @@ func OnReceiveMessage(conn net.Conn) {
 			go OnKernel(cancel)
 			return
 		}
-		fmt.Printf("Read : %s Size: %d\n", string(data[:message]), len(string(data[:message])))
+		fmt.Printf("\nRead : %s Size: %d\n", string(data[:message]), len(string(data[:message])))
 		go OnKernel(MessageData{string(data[:message]), conn})
 	}
 }
