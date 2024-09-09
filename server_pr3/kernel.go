@@ -1,21 +1,19 @@
 package server_pr3
 
-var (
-	createListener      = make(chan MessageData)
-	requestRoomListener = make(chan MessageData)
-	cancelListener      = make(chan MessageData)
+import (
+	"Go_Server_Pr3/utills"
 )
 
+// 접근 유형 확인 후 분배
 func OnKernel(msgData MessageData) {
-	msgData := <-readListener
-	msg := Decoposit(msgData.Msg)
+	msg := utills.Decoposit(msgData.Msg)
 	switch msg[1] {
-	case "create":
-		createListener <- msgData
+	case "createRoom":
+		CreateRoom(msgData)
 	case "requestRoom":
-		requestRoomListener <- msgData
+		RequestRoom(msgData)
 	case "cancel":
-		cancelListener <- <-cancelListener
+		Cancel(msgData)
 	}
 
 }

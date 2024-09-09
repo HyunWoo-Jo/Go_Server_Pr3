@@ -5,8 +5,13 @@ import (
 	"net"
 )
 
+var cm *ConnManager // conn data를 가지고 있는 map
+
 // 서버 Open / tcp 연결
 func OpenServer(port string) {
+
+	cm = NewConnManager() // Conn Manager 생성
+
 	lnsten, err := net.Listen("tcp", port)
 	if err != nil {
 		fmt.Println("Server err :", err)
@@ -37,11 +42,9 @@ func OnAccept(ln net.Listener) {
 			fmt.Println("Accept err :", err)
 			continue
 		}
+		fmt.Println(conn.RemoteAddr().String())
+		cm.AddConn(conn.RemoteAddr().String(), conn) // conn Manager에 등록
+
 		go OnReceiveMessage(conn)
 	}
-}
-
-// 연결 취소
-func Cancel(conn net.Conn) {
-	conn.Close()
 }

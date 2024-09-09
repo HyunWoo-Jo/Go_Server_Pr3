@@ -5,10 +5,6 @@ import (
 	"net"
 )
 
-var (
-	readListener = make(chan MessageData)
-)
-
 // 송신
 func SendMessage(userConn net.Conn, message string) {
 
@@ -27,10 +23,10 @@ func OnReceiveMessage(conn net.Conn) {
 		if err != nil { // 에러
 			fmt.Println("Read Err", err)
 			cancel := MessageData{"err:cancel", conn}
-			readListener <- cancel
+			go OnKernel(cancel)
 			return
 		}
 		fmt.Printf("Read : %s Size: %d\n", string(data[:message]), len(string(data[:message])))
-		readListener <- MessageData{string(data[:message]), conn}
+		go OnKernel(MessageData{string(data[:message]), conn})
 	}
 }

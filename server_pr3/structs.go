@@ -1,6 +1,8 @@
 package server_pr3
 
-import "net"
+import (
+	"net"
+)
 
 type ServerData struct {
 	conn     net.Conn
