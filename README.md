@@ -62,19 +62,21 @@ func OnAccept(ln net.Listener) {
 /// message.go
 // 수신
 func OnReceiveMessage(conn net.Conn) {
+	reader := bufio.NewReader(conn)
 	for {
-		data := make([]byte, 4096)
-		message, err := conn.Read(data)
+		message, err := reader.ReadString('\n')
 		if err != nil { // 에러
 			fmt.Println("Read Err", err)
 			cancel := MessageData{"err:cancel", conn}
 			go OnKernel(cancel)
 			return
 		}
-		fmt.Printf("\nRead : %s Size: %d\n", string(data[:message]), len(string(data[:message])))
-		go OnKernel(MessageData{string(data[:message]), conn})
+		utills.TrimNewline(&message)
+		fmt.Printf("Read : %s Size: %d\n", message, len(message))
+		go OnKernel(MessageData{message, conn})
 	}
 }
+
 ```
 
 ---
