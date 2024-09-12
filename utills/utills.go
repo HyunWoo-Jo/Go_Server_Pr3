@@ -46,3 +46,10 @@ func CryptoSha256(str string) string {
 
 	return hex.EncodeToString(hashByte)
 }
+
+// 문자열의 마지막 '\n'을 제거하는 함수 (포인터 사용)
+func TrimNewline(message *string) {
+	if len(*message) > 0 && (*message)[len(*message)-1] == '\n' {
+		*message = (*message)[:len(*message)-1]
+	}
+}

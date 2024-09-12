@@ -2,6 +2,7 @@ package server_pr3_testing
 
 import (
 	"Go_Server_Pr3/utills"
+	"bufio"
 	"net"
 	"strconv"
 	"strings"
@@ -46,22 +47,21 @@ func OnTest_Server(port string) {
 
 // 수신
 func OnReceiveMessage(conn net.Conn) {
-	defer conn.Close() // 수신 에러시 종료
+	reader := bufio.NewReader(conn)
 	for {
-		data := make([]byte, 4096)
-		message, err := conn.Read(data)
+		message, err := reader.ReadString('\n')
 		if err != nil { // 에러
 			utills.ColorPrintlnGreen("testing Read Err", err.Error())
 			return
 		}
-		utills.ColorPrintlnGreen("testing Read: ", string(data[:message]), " Size: ", strconv.Itoa(len(string(data[:message]))))
+		utills.TrimNewline(&message)
+		utills.ColorPrintlnGreen("testing Read: ", message, " Size: ", strconv.Itoa(len(message)))
 
-		// 수신받은 코드가 command 코드면 반환
-		switch strings.Split(string(data[:message]), "/")[0] {
+		switch strings.Split(message, "/")[0] {
 		case "requestRoom":
-			requestListener <- string(data[:message])
+			requestListener <- message
 		case "joinRoom":
-			joinListener <- string(data[:message])
+			joinListener <- message
 		}
 	}
 }
@@ -70,7 +70,7 @@ func OnReceiveMessage(conn net.Conn) {
 func SendMessage(userConn net.Conn, message string) {
 
 	utills.ColorPrintlnGreen("testing send: ", message)
-	_, err := userConn.Write([]byte(message))
+	_, err := userConn.Write([]byte(message + "\n"))
 	if err != nil {
 		utills.ColorPrintlnGreen("testing send err ", err.Error())
 	}

@@ -1,6 +1,8 @@
 package server_pr3
 
 import (
+	"Go_Server_Pr3/utills"
+	"bufio"
 	"fmt"
 	"net"
 )
@@ -14,7 +16,7 @@ type MessageData struct {
 func SendMessage(userConn net.Conn, message string) {
 
 	fmt.Println("send :", message)
-	_, err := userConn.Write([]byte(message))
+	_, err := userConn.Write([]byte(message + "\n"))
 	if err != nil {
 		fmt.Println("send err ", err)
 	}
@@ -22,16 +24,17 @@ func SendMessage(userConn net.Conn, message string) {
 
 // 수신
 func OnReceiveMessage(conn net.Conn) {
+	reader := bufio.NewReader(conn)
 	for {
-		data := make([]byte, 4096)
-		message, err := conn.Read(data)
+		message, err := reader.ReadString('\n')
 		if err != nil { // 에러
 			fmt.Println("Read Err", err)
 			cancel := MessageData{"err:cancel", conn}
 			go OnKernel(cancel)
 			return
 		}
-		fmt.Printf("\nRead : %s Size: %d\n", string(data[:message]), len(string(data[:message])))
-		go OnKernel(MessageData{string(data[:message]), conn})
+		utills.TrimNewline(&message)
+		fmt.Printf("Read : %s Size: %d\n", message, len(message))
+		go OnKernel(MessageData{message, conn})
 	}
 }
