@@ -38,8 +38,7 @@ func CreateRoom(msgData MessageData, msg []string) {
 
 	// 방생성 RoomManager 등록
 	rm.CreateRoom(cryptoKey, roomData)
-
-	SendMessage(msgData.Conn, "sus create Room")
+	SendMessage(msgData.Conn, "msg:sus create Room")
 }
 
 // 방 접속
@@ -52,15 +51,21 @@ func joinRoom(msgData MessageData, msg []string) {
 			roomDataMsg := "joinRoom/" + roomData.ip + ":" + roomData.port
 			SendMessage(msgData.Conn, roomDataMsg)
 		} else { // 비밀번호 일치하지 않음
-			SendMessage(msgData.Conn, "Password doesn't match")
+			SendMessage(msgData.Conn, "msg:Password doesn't match")
 		}
 	} else { // 방이 존재하지 않음
-		SendMessage(msgData.Conn, "doesn't exist room")
+		SendMessage(msgData.Conn, "msg:doesn't exist room")
 	}
 
 }
 
 // 연결 취소
 func Cancel(msgData MessageData) {
+	ip := utills.NetConnSplitIp(msgData.Conn) // ip port 분리
+	cryptoKey := utills.CryptoSha256(ip)      // ip 암호화
+	_, isExist := rm.GetRoom(cryptoKey)
+	if isExist {
+		rm.RemoveRoom(cryptoKey)
+	}
 	msgData.Conn.Close()
 }
