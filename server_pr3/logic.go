@@ -8,10 +8,10 @@ import (
 func RequestRoom(msgData MessageData) {
 
 	roomDatas := rm.RoomList()
-	// ../roomIpHash:userName:roomName
-	requestMsg := "requestRoom"
+	// ../roomIpHash:roomName:userName
+	requestMsg := "data:roomList:"
 	for _, roomData := range roomDatas {
-		requestMsg += "/" + roomData.roomIpHash + ":" + roomData.userName + ":" + roomData.roomName
+		requestMsg += roomData.roomIpHash + "/" + roomData.roomName + "/" + roomData.userName + "/"
 	}
 	SendMessage(msgData.Conn, requestMsg)
 }
@@ -48,7 +48,7 @@ func joinRoom(msgData MessageData, msg []string) {
 	roomData, isExist := rm.GetRoom(msg[2])
 	if isExist {
 		if roomData.password == msg[3] {
-			roomDataMsg := "joinRoom/" + roomData.ip + ":" + roomData.port
+			roomDataMsg := "data:joinRoom:" + roomData.ip + "/" + roomData.port
 			SendMessage(msgData.Conn, roomDataMsg)
 		} else { // 비밀번호 일치하지 않음
 			SendMessage(msgData.Conn, "msg:Password doesn't match")
