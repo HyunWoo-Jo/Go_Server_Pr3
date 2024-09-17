@@ -14,7 +14,7 @@ func RequestRoom(msgData MessageData) {
 
 	for _, roomData := range roomDatas {
 		isPassword := roomData.password != "" // public ture, private false
-		requestMsg += roomData.roomIpHash + "/" + roomData.roomName + "/" + roomData.userName + "/" + strconv.FormatBool(isPassword)
+		requestMsg += roomData.roomIpHash + "/" + roomData.roomName + "/" + roomData.userName + "/" + strconv.FormatBool(isPassword) + "/"
 	}
 	SendMessage(msgData.Conn, requestMsg)
 }
