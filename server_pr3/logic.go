@@ -2,16 +2,19 @@ package server_pr3
 
 import (
 	"Go_Server_Pr3/utills"
+	"strconv"
 )
 
 // 방 목록 요청
 func RequestRoom(msgData MessageData) {
 
 	roomDatas := rm.RoomList()
-	// ../roomIpHash:roomName:userName
+	// ..:roomIpHash/roomName/userName/isPublic
 	requestMsg := "data:roomList:"
+
 	for _, roomData := range roomDatas {
-		requestMsg += roomData.roomIpHash + "/" + roomData.roomName + "/" + roomData.userName + "/"
+		isPassword := roomData.password != "" // public ture, private false
+		requestMsg += roomData.roomIpHash + "/" + roomData.roomName + "/" + roomData.userName + "/" + strconv.FormatBool(isPassword)
 	}
 	SendMessage(msgData.Conn, requestMsg)
 }
