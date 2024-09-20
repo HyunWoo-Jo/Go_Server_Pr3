@@ -10,7 +10,7 @@ func RequestRoom(msgData MessageData) {
 
 	roomDatas := rm.RoomList()
 	// ..:roomIpHash/roomName/userName/isPublic
-	requestMsg := "data:roomList:"
+	requestMsg := "data:roomList:sus:"
 
 	for _, roomData := range roomDatas {
 		isPassword := roomData.password != "" // public ture, private false
@@ -51,13 +51,13 @@ func joinRoom(msgData MessageData, msg []string) {
 	roomData, isExist := rm.GetRoom(msg[2])
 	if isExist {
 		if roomData.password == msg[3] {
-			roomDataMsg := "data:joinRoom:" + roomData.ip + "/" + roomData.port
+			roomDataMsg := "data:joinRoom:sus:" + roomData.ip + "/" + roomData.port
 			SendMessage(msgData.Conn, roomDataMsg)
 		} else { // 비밀번호 일치하지 않음
-			SendMessage(msgData.Conn, "msg:Password doesn't match")
+			SendMessage(msgData.Conn, "data:joinRoom:fail")
 		}
 	} else { // 방이 존재하지 않음
-		SendMessage(msgData.Conn, "msg:doesn't exist room")
+		SendMessage(msgData.Conn, "data:joinRoom:noRoom")
 	}
 
 }
