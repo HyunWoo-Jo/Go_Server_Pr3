@@ -6,7 +6,7 @@ import (
 )
 
 const PORT = ":43233"
-const TEST = false
+const TEST = true
 
 func main() {
 	if TEST {

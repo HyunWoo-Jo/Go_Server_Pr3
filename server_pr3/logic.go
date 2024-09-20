@@ -10,11 +10,15 @@ func RequestRoom(msgData MessageData) {
 
 	roomDatas := rm.RoomList()
 	// ..:roomIpHash/roomName/userName/isPublic
-	requestMsg := "data:roomList:sus:"
-
-	for _, roomData := range roomDatas {
-		isPassword := roomData.password != "" // public ture, private false
-		requestMsg += roomData.roomIpHash + "/" + roomData.roomName + "/" + roomData.userName + "/" + strconv.FormatBool(isPassword) + "/"
+	requestMsg := "data:roomList:"
+	if len(roomDatas) > 0 {
+		requestMsg += "sus:"
+		for _, roomData := range roomDatas {
+			isPassword := roomData.password != "" // public ture, private false
+			requestMsg += roomData.roomIpHash + "/" + roomData.roomName + "/" + roomData.userName + "/" + strconv.FormatBool(isPassword) + "/"
+		}
+	} else {
+		requestMsg += "noRoom:"
 	}
 	SendMessage(msgData.Conn, requestMsg)
 }
