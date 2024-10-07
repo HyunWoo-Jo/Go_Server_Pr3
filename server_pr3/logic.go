@@ -2,16 +2,23 @@ package server_pr3
 
 import (
 	"Go_Server_Pr3/utills"
+	"strconv"
 )
 
 // 방 목록 요청
 func RequestRoom(msgData MessageData) {
 
 	roomDatas := rm.RoomList()
-	// ../roomIpHash:userName:roomName
-	requestMsg := "requestRoom"
-	for _, roomData := range roomDatas {
-		requestMsg += "/" + roomData.roomIpHash + ":" + roomData.userName + ":" + roomData.roomName
+	// ..:roomIpHash/roomName/userName/isPublic
+	requestMsg := "data:roomList:"
+	if len(roomDatas) > 0 {
+		requestMsg += "sus:"
+		for _, roomData := range roomDatas {
+			isPassword := roomData.password == "" // public ture, private false
+			requestMsg += roomData.roomIpHash + "/" + roomData.roomName + "/" + roomData.userName + "/" + strconv.FormatBool(isPassword) + "/"
+		}
+	} else {
+		requestMsg += "noRoom:"
 	}
 	SendMessage(msgData.Conn, requestMsg)
 }
@@ -38,8 +45,7 @@ func CreateRoom(msgData MessageData, msg []string) {
 
 	// 방생성 RoomManager 등록
 	rm.CreateRoom(cryptoKey, roomData)
-
-	SendMessage(msgData.Conn, "sus create Room")
+	SendMessage(msgData.Conn, "msg:sus create Room")
 }
 
 // 방 접속
@@ -49,18 +55,24 @@ func joinRoom(msgData MessageData, msg []string) {
 	roomData, isExist := rm.GetRoom(msg[2])
 	if isExist {
 		if roomData.password == msg[3] {
-			roomDataMsg := "joinRoom/" + roomData.ip + ":" + roomData.port
+			roomDataMsg := "data:joinRoom:sus:" + roomData.ip + "/" + roomData.port
 			SendMessage(msgData.Conn, roomDataMsg)
 		} else { // 비밀번호 일치하지 않음
-			SendMessage(msgData.Conn, "Password doesn't match")
+			SendMessage(msgData.Conn, "data:joinRoom:fail")
 		}
 	} else { // 방이 존재하지 않음
-		SendMessage(msgData.Conn, "doesn't exist room")
+		SendMessage(msgData.Conn, "data:joinRoom:noRoom")
 	}
 
 }
 
 // 연결 취소
 func Cancel(msgData MessageData) {
+	ip := utills.NetConnSplitIp(msgData.Conn) // ip port 분리
+	cryptoKey := utills.CryptoSha256(ip)      // ip 암호화
+	_, isExist := rm.GetRoom(cryptoKey)
+	if isExist {
+		rm.RemoveRoom(cryptoKey)
+	}
 	msgData.Conn.Close()
 }

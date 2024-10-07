@@ -5,13 +5,11 @@ import (
 	"net"
 )
 
-var cm *ConnManager // conn data를 관리 하는 map
 var rm *RoomManager // room data를 관리 하는 Map
 
 // 서버 Open / tcp 연결
 func OpenServer(port string) {
 
-	cm = NewConnManager() // conn manager 생성
 	rm = NewRoomManager() // room manager 생성
 
 	lnsten, err := net.Listen("tcp", port)
@@ -45,7 +43,6 @@ func OnAccept(ln net.Listener) {
 			continue
 		}
 		fmt.Println(conn.RemoteAddr().String())
-		cm.AddConn(conn.RemoteAddr().String(), conn) // conn Manager에 등록
 
 		go OnReceiveMessage(conn)
 	}
