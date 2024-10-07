@@ -14,7 +14,7 @@ func RequestRoom(msgData MessageData) {
 	if len(roomDatas) > 0 {
 		requestMsg += "sus:"
 		for _, roomData := range roomDatas {
-			isPassword := roomData.password != "" // public ture, private false
+			isPassword := roomData.password == "" // public ture, private false
 			requestMsg += roomData.roomIpHash + "/" + roomData.roomName + "/" + roomData.userName + "/" + strconv.FormatBool(isPassword) + "/"
 		}
 	} else {
